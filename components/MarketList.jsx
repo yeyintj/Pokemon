@@ -13,7 +13,7 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { getRequest } from "../api/AxiosApi";
+// import { getRequest } from "../api/AxiosApi";
 import {
   ChevronDown,
   ChevronUp,
@@ -27,6 +27,7 @@ import MarketProvider from "./MarketProvider";
 import LottieView from "lottie-react-native";
 import MenuDropdown from "./MenuDropdown";
 import Cart from "./Cart";
+import axios from "axios";
 
 export default function MarketList() {
   const [pokeList, setPokeList] = useState([]);
@@ -46,8 +47,9 @@ export default function MarketList() {
   const fetchMarketList = useQuery({
     queryKey: ["marketList"],
     queryFn: async () => {
-      const response = await getRequest("cards?page=1&pageSize=20");
+      const response = await axios.get("cards?page=1&pageSize=20");
       const apiData = response.data.data;
+      console.log("Check Market list Data=====>>>", apiData);
       setPokeList(apiData);
       return apiData;
     },
@@ -57,7 +59,7 @@ export default function MarketList() {
   const fetchTypeList = useQuery({
     queryKey: ["type"],
     queryFn: async () => {
-      const response = await getRequest("types");
+      const response = await axios.get("types");
       const apiData = response.data.data;
       setSortType(apiData);
       return apiData;
@@ -67,7 +69,7 @@ export default function MarketList() {
   const fetchRairtyList = useQuery({
     queryKey: ["rairty"],
     queryFn: async () => {
-      const response = await getRequest("rarities");
+      const response = await axios.get("rarities");
       const apiData = response.data.data;
       setSortRairty(apiData);
       return apiData;
@@ -77,7 +79,7 @@ export default function MarketList() {
   const fetchSetList = useQuery({
     queryKey: ["set"],
     queryFn: async () => {
-      const response = await getRequest("sets");
+      const response = await axios.get("sets");
       const apiData = response.data.data;
       // console.log("Set Data: ", apiData)
       setSortSet(apiData);
@@ -102,7 +104,9 @@ export default function MarketList() {
     } else {
       try {
         // Make an API request based on the search text
-        const response = await getRequest(`cards?q=name:${text}&page=1&pageSize=3`);
+        const response = await axios.get(
+          `cards?q=name:${text}&page=1&pageSize=3`,
+        );
         const searchData = response.data.data;
   
         // Update the list with the search results
@@ -132,8 +136,8 @@ const handlePagination = async () => {
     pageSizeRef.current = pageSizeRef.current * 2;
 
     // Fetch the next page of data
-    const response = await getRequest(
-      `cards?page=${pageRef.current}&pageSize=${pageSizeRef.current}`
+    const response = await axios.get(
+      `cards?page=${pageRef.current}&pageSize=${pageSizeRef.current}`,
     );
 
     const apiData = response.data.data;
